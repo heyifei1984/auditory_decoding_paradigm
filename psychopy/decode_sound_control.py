@@ -69,10 +69,12 @@ class TriggerPort:
     def __init__(self, use_triggers: bool, address: int):
         self.port = None
         self.enabled = False
+        self.mode = "log_only"
         if use_triggers and parallel is not None:
             try:
                 self.port = parallel.ParallelPort(address=address)
                 self.enabled = True
+                self.mode = "lpt"
             except Exception:
                 self.port = None
                 self.enabled = False
@@ -179,6 +181,7 @@ def main():
 
     clock = core.Clock()
     triggers = TriggerPort(USE_TRIGGERS, LPT_ADDRESS)
+    trigger_mode = triggers.mode
 
     frame_rate = win.getActualFrameRate() or 60.0
     iti_duration = FIXED_ITI_FRAMES / frame_rate
@@ -279,6 +282,7 @@ def main():
                     result = {
                         "subject_id": subject_id,
                         "run_profile": RUN_PROFILE,
+                        "trigger_mode": trigger_mode,
                         "block_index": block_index,
                         "block_total": total_blocks,
                         "block_type": "control",

@@ -112,6 +112,7 @@ current legacy behavior in `legacy_paradigm/decode_sound/`.
 - Control triggers (pp1):
   - Events: 1=trial start, 2=cue, 3=button press
   - Active: [121..123]
+  - If no LPT port is available, trigger codes are logged but not sent
 
 ## Data logging
 - Output format:

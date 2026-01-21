@@ -36,4 +36,4 @@ The script saves a CSV log to `psychopy/data/`.
 ## Notes for experimenters
 - Use full screen and close other applications.
 - Verify the LPT trigger connection before running participants.
-- If no triggers are available, set `USE_TRIGGERS = False` in the script.
+- If no LPT is available, the script automatically logs trigger codes without sending them.
