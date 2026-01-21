@@ -15,7 +15,7 @@ import random
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
 
 import numpy as np
 from psychopy import core, event, gui, sound, visual
@@ -42,6 +42,7 @@ CONTROL_CUE_DELAYS = [1.1, 1.2, 1.3, 1.4, 1.5]
 STIM_DELAY = 0.1
 RESPONSE_WINDOW = 1.0
 TOO_FAST_THRESHOLD = 0.7
+MAX_CLICK_WAIT = 4.0
 FIXED_ITI_FRAMES = 75
 
 # Audio
@@ -166,15 +167,28 @@ def wait_with_abort(clock: core.Clock, duration: float):
 
 
 def wait_for_mouse_press(
-    mouse: event.Mouse, clock: core.Clock, min_delay: float, trigger_port: TriggerPort
-) -> Tuple[float, float, bool]:
+    mouse: event.Mouse,
+    clock: core.Clock,
+    win: visual.Window,
+    timeout_s: float,
+    prompt_text: str,
+) -> float:
     mouse.clickReset()
+    start_time = clock.getTime()
+    prompt_shown = False
     while True:
         if "escape" in event.getKeys(["escape"]):
             raise KeyboardInterrupt
         if mouse.getPressed()[0]:
-            button_down = clock.getTime()
-            return button_down, button_down, True
+            return clock.getTime()
+        if (not prompt_shown) and (clock.getTime() - start_time) >= timeout_s:
+            if prompt_text:
+                prompt = visual.TextStim(
+                    win, text=prompt_text, color="black", height=0.05, wrapWidth=1.4
+                )
+                prompt.draw()
+                win.flip()
+            prompt_shown = True
         core.wait(0.001)
 
 
@@ -254,11 +268,13 @@ def main():
         task_text = "Druecke die Leertaste, wenn du das Rauschen hoerst."
         continue_text = "Druecke eine beliebige Taste, um fortzufahren."
         too_fast_text = "Zu schnell. Versuche es nochmal."
+        click_prompt_text = "Bitte klicken Sie die Maus."
     else:
         intro_text = "This is an instruction session."
         task_text = "Press the space bar when you hear noise."
         continue_text = "Press any key to continue."
         too_fast_text = "Too fast. Try again."
+        click_prompt_text = "Please click the mouse."
 
     show_text(win, intro_text + "\n\n" + continue_text)
     show_text(win, task_text + "\n\n" + continue_text)
@@ -343,8 +359,8 @@ def main():
 
                     if block_type == "control":
                         mouse = event.Mouse(win=win)
-                        button_down, _, _ = wait_for_mouse_press(
-                            mouse, clock, TOO_FAST_THRESHOLD, triggers
+                        button_down = wait_for_mouse_press(
+                            mouse, clock, win, MAX_CLICK_WAIT, click_prompt_text
                         )
                         button_delay = button_down - cue_start
                         if button_delay < TOO_FAST_THRESHOLD:
@@ -404,8 +420,8 @@ def main():
 
                     if block_type == "active":
                         mouse = event.Mouse(win=win)
-                        button_down, _, _ = wait_for_mouse_press(
-                            mouse, clock, TOO_FAST_THRESHOLD, triggers
+                        button_down = wait_for_mouse_press(
+                            mouse, clock, win, MAX_CLICK_WAIT, click_prompt_text
                         )
                         button_delay = button_down - cue_start
                         if button_delay < TOO_FAST_THRESHOLD:

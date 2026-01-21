@@ -36,6 +36,7 @@ DEFAULT_LANG = "English"
 # Timing (seconds)
 CONTROL_CUE_DELAYS = [1.1, 1.2, 1.3, 1.4, 1.5]
 TOO_FAST_THRESHOLD = 0.7
+MAX_CLICK_WAIT = 4.0
 FIXED_ITI_FRAMES = 75
 
 # Control timing (ms)
@@ -104,13 +105,29 @@ def wait_with_abort(clock: core.Clock, duration: float):
         core.wait(0.01)
 
 
-def wait_for_mouse_press(mouse: event.Mouse, clock: core.Clock) -> float:
+def wait_for_mouse_press(
+    mouse: event.Mouse,
+    clock: core.Clock,
+    win: visual.Window,
+    timeout_s: float,
+    prompt_text: str,
+) -> float:
     mouse.clickReset()
+    start_time = clock.getTime()
+    prompt_shown = False
     while True:
         if "escape" in event.getKeys(["escape"]):
             raise KeyboardInterrupt
         if mouse.getPressed()[0]:
             return clock.getTime()
+        if (not prompt_shown) and (clock.getTime() - start_time) >= timeout_s:
+            if prompt_text:
+                prompt = visual.TextStim(
+                    win, text=prompt_text, color="black", height=0.05, wrapWidth=1.4
+                )
+                prompt.draw()
+                win.flip()
+            prompt_shown = True
         core.wait(0.001)
 
 
@@ -183,12 +200,14 @@ def main():
         too_fast_text = "Zu schnell. Versuche es nochmal."
         finish_text = "Kontrollsitzung beendet. Vielen Dank!"
         break_text = 'Druecke "C" zum Fortfahren oder "Esc" zum Abbrechen.'
+        click_prompt_text = "Bitte klicken Sie die Maus."
     else:
         task_text = "Control block: press the button when you see the cross."
         continue_text = "Press any key to continue."
         too_fast_text = "Too fast. Try again."
         finish_text = "Control session finished. Thank you!"
         break_text = 'Press "C" to continue or "Esc" to abort.'
+        click_prompt_text = "Please click the mouse."
 
     show_text(win, task_text + "\n\n" + continue_text)
 
@@ -234,7 +253,9 @@ def main():
                     trigger_cue = trig
 
                     mouse = event.Mouse(win=win)
-                    button_down = wait_for_mouse_press(mouse, clock)
+                    button_down = wait_for_mouse_press(
+                        mouse, clock, win, MAX_CLICK_WAIT, click_prompt_text
+                    )
                     button_delay = button_down - cue_start
                     if button_delay < TOO_FAST_THRESHOLD:
                         triggers.send(TRIG_TOO_FAST)

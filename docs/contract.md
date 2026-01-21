@@ -139,6 +139,8 @@ current legacy behavior in `legacy_paradigm/decode_sound/`.
   - No response within 1.0 s sets `response_made = false`
 - Invalid inputs:
   - Button press < 0.7 s after cue triggers warning and repeats trial
+- Slow inputs:
+  - If no button press within 4.0 s after cue, show reminder and keep waiting
 - Abort behavior:
   - ESC stops the experiment and closes PTB audio/screen
 
