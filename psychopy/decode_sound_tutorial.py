@@ -31,7 +31,7 @@ except Exception:
 # -----------------------------
 RUN_PROFILE = "tutorial"  # "tutorial" or "full"
 USE_TRIGGERS = True
-LPT_ADDRESS = 0x0378
+LPT_ADDRESS = 0x3FF8
 DATA_DIR = Path("psychopy/data")
 FULLSCREEN = True
 DEFAULT_LANG = "English"

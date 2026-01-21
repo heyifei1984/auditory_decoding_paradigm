@@ -8,7 +8,7 @@ current legacy behavior in `legacy_paradigm/decode_sound/`.
 - Target platform: Windows 10, PsychoPy 2024.2.4
 - Included modes: main experiment (active/passive blocks), control blocks, training
 - Display: full screen by default
-- Hardware: LPT/parallel port triggers on Windows
+- Hardware: LPT/parallel port triggers on Windows (base address 0x3FF8)
 - Exclusions: legacy Linux parallel port paths must be adapted to Windows hardware
 
 ## Run profiles

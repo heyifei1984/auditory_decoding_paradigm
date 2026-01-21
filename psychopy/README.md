@@ -8,7 +8,7 @@ This folder contains the PsychoPy 2024.2.4 implementation.
 3) At the top of the script, confirm:
    - `RUN_PROFILE = "tutorial"`
    - `FULLSCREEN = True`
-   - `LPT_ADDRESS` matches your machine (default `0x0378`).
+   - `LPT_ADDRESS = 0x3FF8`
 4) Click Run.
 
 You will be prompted to select a language and enter the participant ID.

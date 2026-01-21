@@ -10,7 +10,7 @@ can run pilot sessions without digging into the code.
 3) Confirm the settings at the top of the script:
    - `RUN_PROFILE = "tutorial"`
    - `FULLSCREEN = True`
-   - `LPT_ADDRESS` matches your machine (default `0x0378`)
+   - `LPT_ADDRESS = 0x3FF8`
 4) Click Run and follow the on-screen prompts.
 
 The data file will be saved to `psychopy/data/` as a CSV.
