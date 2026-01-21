@@ -1,0 +1,13 @@
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo
+*.log
+*.tmp
+*.swp
+
+# PsychoPy
+*.psyexp.bak
+
+# Legacy assets may be large; ignore if needed
+legacy_paradigm/.placeholder
