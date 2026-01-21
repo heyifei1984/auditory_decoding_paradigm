@@ -15,6 +15,14 @@ can run pilot sessions without digging into the code.
 
 The data file will be saved to `psychopy/data/` as a CSV.
 
+## Running the full experiment
+1) Open `psychopy/decode_sound_experiment.py`.
+2) Click Run and follow the prompts.
+
+## Running the control session
+1) Open `psychopy/decode_sound_control.py`.
+2) Click Run and follow the prompts.
+
 ## Structure
 - `legacy_paradigm/`: original Psychtoolbox/Octave code
 - `docs/`: contract, intake notes, and decisions

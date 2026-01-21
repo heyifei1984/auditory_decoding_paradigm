@@ -20,6 +20,14 @@ The script saves a CSV log to `psychopy/data/`.
 - 1 control block (5 trials)
 - Block prompts show block index and type
 
+## Full experiment
+- Run `psychopy/decode_sound_experiment.py`
+- 10 blocks alternating active/passive, 60 trials each
+
+## Control session
+- Run `psychopy/decode_sound_control.py`
+- 2 blocks, 50 trials each (active only)
+
 ## Controls
 - Active press: mouse button
 - Catch response: `space`
