@@ -7,7 +7,19 @@ current legacy behavior in `legacy_paradigm/decode_sound/`.
 - Experiment name: Decode_Sound (auditory decoding)
 - Target platform: Windows 10, PsychoPy 2024.2.4
 - Included modes: main experiment (active/passive blocks), control blocks, training
+- Display: full screen by default
+- Hardware: LPT/parallel port triggers on Windows
 - Exclusions: legacy Linux parallel port paths must be adapted to Windows hardware
+
+## Run profiles
+- Pilot profile (initial build):
+  - 1 active block, 12 trials (5 low, 5 high, 2 catch: 1 low+noise, 1 high+noise)
+  - 1 passive block, 12 trials (same composition)
+  - 1 control block, 5 trials (active)
+  - Order: active, passive, control
+- Full profile (legacy parity):
+  - 10 blocks alternating [1 2 1 2 1 2 1 2 1 2], 60 trials per block
+  - 4 catch trials per block (2 low+noise, 2 high+noise)
 
 ## Stimuli
 - Audio stimuli:
@@ -22,7 +34,9 @@ current legacy behavior in `legacy_paradigm/decode_sound/`.
 - Timing constraints:
   - Cue delay (cross small -> large): 1.2 to 1.7 s in 0.1 s steps
   - Stim onset delay after button-down: 0.1 s
-  - Response window: 1.0 s after stimulus onset
+  - Response window: 1.0 s after stimulus offset
+  - Control cue delay: 1.1 to 1.5 s in 0.1 s steps
+  - Control ITI: 1250 to 1450 ms in 50 ms steps
 
 ## Trial structure
 - Phase sequence:
@@ -31,13 +45,15 @@ current legacy behavior in `legacy_paradigm/decode_sound/`.
   - Cue onset (larger cross) after cue delay, cue trigger
   - Button press (active) or scheduled button-down (passive), press trigger
   - Audio stimulus onset after 0.1 s, stim trigger
-  - Response window (space to indicate noise)
+  - Response window (space to indicate noise) starts after audio offset
   - ITI (blank)
 - Durations and timing source:
   - Visual timing uses display frame timing; audio uses scheduled onset
   - ITI behavior:
     - If response made: wait for (response_window - RT), then next trial
     - If no response: blank screen for ~75 frames (about 1.25 s at 60 Hz)
+  - Control ITI behavior:
+    - Blank screen at button-down + control ITI, then fixed blank for ~75 frames
 - Response windows:
   - Response required within 1.0 s; no response is allowed
 
@@ -45,26 +61,30 @@ current legacy behavior in `legacy_paradigm/decode_sound/`.
 - Factors:
   - Block type: active (1) vs passive (2)
   - Stimulus type: low, high, low+noise (catch), high+noise (catch)
+  - Both low+noise and high+noise are treated as catch trials
 - Levels:
-  - 10 blocks, alternating [1 2 1 2 1 2 1 2 1 2]
-  - 60 trials per block
-  - 4 catch trials per block (2 low+noise, 2 high+noise)
+  - Pilot profile: 2 experiment blocks (active then passive), 12 trials each
+  - Full profile: 10 blocks, alternating [1 2 1 2 1 2 1 2 1 2], 60 trials each
+  - Catch trials: 2 in pilot, 4 in full (balanced across low/high noise)
 - Randomization rules:
   - Stimulus types are shuffled within each block from [low, high] and then
     catch trials replace two low and two high trials
   - Cue delays are shuffled per block from 1.2 to 1.7 s (0.1 s steps)
-  - Passive blocks use a shuffled list of button delays derived from active
-    button delays (intended behavior)
+  - Passive blocks use a shuffled list of button delays derived from the
+    immediately preceding active block; values are clamped at 2.5 s
 - Counterbalancing: none (fixed block order)
 
 ## Instructions and UI
 - Instruction screens:
   - Language prompt (Deutsch/English) at experiment start
   - Task instruction: press space when noise is heard
-  - Block-type screen at the start of each block (active/passive)
-  - Break screen between blocks ("esc" to pause, "C" to continue)
+  - Block-type screen at the start of each block (active/passive/control)
+  - Block prompt includes block index and total for the current run, for example:
+    "Block 1/6 (Active)"
+  - Break screen between blocks ("esc" to abort, "C" to continue)
 - Practice or calibration:
   - Training scripts provide tone demos and short active/passive practice
+  - Functional similarity is sufficient for training flow
 - Feedback behavior:
   - Active trials: "Too fast" warning if button press < 0.7 s after cue
 
@@ -78,6 +98,8 @@ current legacy behavior in `legacy_paradigm/decode_sound/`.
   - `ESC` aborts and cleans up
 - RT rules:
   - RT measured from response window start to first key press
+  - Correctness rule: respond to catch (noise) trials; withhold on non-catch
+  - `response_correct` is true for catch+response, or non-catch+no response
 
 ## Triggers and event codes
 - Experiment triggers (pp1):
@@ -99,6 +121,13 @@ current legacy behavior in `legacy_paradigm/decode_sound/`.
   - `trial_start`, `cross_on`, `cue_start`, `button_down`
   - `stim1_on`, `stim1_off`, `stim_duration`, `real_stim_delay`
   - `response_key`, `RT`, `response_made`, `response_correct`
+- Additional timing fields for PsychoPy logs:
+  - planned vs actual times for cue, button-down, stimulus onset/offset
+  - audio device latency if available
+- Control trial fields:
+  - `trial_num`, `block_num`, `trial_type`, `trial_start`
+  - `cross_on`, `cue_start`, `button_down`, `button_up`, `button_time`
+  - `control_iti`, `control_iti_planned`
 - File naming:
   - Trials: `sub<id>_block<block>_trial<trial>.mat`
   - Subject: `subject<id>.mat`
@@ -118,6 +147,10 @@ current legacy behavior in `legacy_paradigm/decode_sound/`.
   - Same block count/order and trial count
   - Same cue delay distribution and catch trial insertion
   - Same response window and ITI behavior
+- Pilot profile acceptance:
+  - 1 active block (12 trials: 5 low, 5 high, 2 catch)
+  - 1 passive block (12 trials: 5 low, 5 high, 2 catch)
+  - 1 control block (5 trials)
 - Timing tolerance:
   - Audio onset scheduled within 1 frame of target time
   - Visual flips aligned within 1 frame of schedule
