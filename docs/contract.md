@@ -81,7 +81,7 @@ current legacy behavior in `legacy_paradigm/decode_sound/`.
   - Block-type screen at the start of each block (active/passive/control)
   - Block prompt includes block index and total for the current run, for example:
     "Block 1/6 (Active)"
-  - Break screen between blocks ("esc" to abort, "C" to continue)
+  - Break screen between blocks (prompt to take a break, then "C" to continue)
 - Practice or calibration:
   - Training scripts provide tone demos and short active/passive practice
   - Functional similarity is sufficient for training flow

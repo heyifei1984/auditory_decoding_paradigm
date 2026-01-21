@@ -523,9 +523,11 @@ def main():
 
             if block_index < total_blocks:
                 if lang == "Deutsch":
-                    break_text = 'Druecke "C" zum Fortfahren oder "Esc" zum Abbrechen.'
+                    break_text = (
+                        'Bitte machen Sie eine Pause.\n\nDruecke "C", um fortzufahren.'
+                    )
                 else:
-                    break_text = 'Press "C" to continue or "Esc" to abort.'
+                    break_text = 'Please take a break.\n\nPress "C" to continue.'
                 show_text(win, break_text, wait_keys=False)
                 while True:
                     keys = event.getKeys(["c", "escape"])

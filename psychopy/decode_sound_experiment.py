@@ -249,14 +249,14 @@ def main():
         too_fast_text = "Zu schnell. Versuche es nochmal."
         too_slow_text = "Zu langsam. Bitte wiederhole den Durchgang."
         finish_text = "Experiment beendet. Vielen Dank!"
-        break_text = 'Druecke "C" zum Fortfahren oder "Esc" zum Abbrechen.'
+        break_text = 'Bitte machen Sie eine Pause.\n\nDruecke "C", um fortzufahren.'
     else:
         task_text = "Press the space bar when you hear noise."
         continue_text = "Press any key to continue."
         too_fast_text = "Too fast. Try again."
         too_slow_text = "Too slow. Please repeat the trial."
         finish_text = "Experiment finished. Thank you!"
-        break_text = 'Press "C" to continue or "Esc" to abort.'
+        break_text = 'Please take a break.\n\nPress "C" to continue.'
 
     show_text(win, task_text + "\n\n" + continue_text)
 
