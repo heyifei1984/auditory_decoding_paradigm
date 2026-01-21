@@ -9,3 +9,4 @@ When making changes:
 - Prefer small, auditable edits.
 - Document assumptions in `docs/decisions.md` if needed.
 - Keep paths and filenames ASCII.
+- Before each commit, run a quick code review of uncommitted changes, then commit.

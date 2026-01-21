@@ -140,7 +140,7 @@ current legacy behavior in `legacy_paradigm/decode_sound/`.
 - Invalid inputs:
   - Button press < 0.7 s after cue triggers warning and repeats trial
 - Slow inputs:
-  - If no button press within 4.0 s after cue, show reminder and keep waiting
+  - If no button press within 4.0 s after cue, show a \"too slow\" prompt and repeat the trial
 - Abort behavior:
   - ESC stops the experiment and closes PTB audio/screen
 
