@@ -4,11 +4,11 @@ This repo hosts a legacy Psychtoolbox (Octave) paradigm and a PsychoPy
 rewrite (2024.2.4) for Windows 10. It is organized so experimenter helpers
 can run pilot sessions without digging into the code.
 
-## Quick start (pilot, PsychoPy)
+## Quick start (tutorial / pilot, PsychoPy)
 1) Open PsychoPy (Coder).
-2) Open `psychopy/decode_sound_pilot.py`.
+2) Open `psychopy/decode_sound_tutorial.py`.
 3) Confirm the settings at the top of the script:
-   - `RUN_PROFILE = "pilot"`
+   - `RUN_PROFILE = "tutorial"`
    - `FULLSCREEN = True`
    - `LPT_ADDRESS` matches your machine (default `0x0378`)
 4) Click Run and follow the on-screen prompts.

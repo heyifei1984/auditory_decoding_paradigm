@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Decode_Sound pilot implementation for PsychoPy 2024.2.4.
+Decode_Sound tutorial (pilot) implementation for PsychoPy 2024.2.4.
 
 Run this file inside PsychoPy (Coder) or from a PsychoPy-enabled Python
-environment. This script is a minimal, user-friendly version for pilot
+environment. This script is a minimal, user-friendly version for tutorial
 testing with LPT triggers on Windows.
 """
 
@@ -29,7 +29,7 @@ except Exception:
 # -----------------------------
 # User-facing configuration
 # -----------------------------
-RUN_PROFILE = "pilot"  # "pilot" or "full"
+RUN_PROFILE = "tutorial"  # "tutorial" or "full"
 USE_TRIGGERS = True
 LPT_ADDRESS = 0x0378
 DATA_DIR = Path("psychopy/data")
@@ -196,7 +196,7 @@ def get_participant_info() -> Dict[str, str]:
     return info
 
 
-def build_trials_pilot() -> Dict[str, List[str]]:
+def build_trials_tutorial() -> Dict[str, List[str]]:
     base = ["low"] * 5 + ["high"] * 5 + ["low_noise"] + ["high_noise"]
     active = base[:]
     passive = base[:]
@@ -231,7 +231,7 @@ def main():
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     subject_id = info["participant"] or "unknown"
-    data_file = DATA_DIR / f"sub{subject_id}_{timestamp}.csv"
+    data_file = DATA_DIR / f"sub{subject_id}_{RUN_PROFILE}_{timestamp}.csv"
 
     win = visual.Window(
         size=[1280, 720],
@@ -250,21 +250,24 @@ def main():
     iti_duration = FIXED_ITI_FRAMES / frame_rate
 
     if lang == "Deutsch":
+        intro_text = "Dies ist eine Anleitungssitzung."
         task_text = "Druecke die Leertaste, wenn du das Rauschen hoerst."
         continue_text = "Druecke eine beliebige Taste, um fortzufahren."
         too_fast_text = "Zu schnell. Versuche es nochmal."
     else:
+        intro_text = "This is an instruction session."
         task_text = "Press the space bar when you hear noise."
         continue_text = "Press any key to continue."
         too_fast_text = "Too fast. Try again."
 
+    show_text(win, intro_text + "\n\n" + continue_text)
     show_text(win, task_text + "\n\n" + continue_text)
 
     results: List[TrialResult] = []
 
-    if RUN_PROFILE == "pilot":
+    if RUN_PROFILE in ("tutorial", "pilot"):
         blocks = [("active", 12), ("passive", 12), ("control", 5)]
-        block_trials = build_trials_pilot()
+        block_trials = build_trials_tutorial()
     else:
         blocks = [("active", 60), ("passive", 60)] * 5
         block_trials = {}
@@ -278,7 +281,7 @@ def main():
             show_text(win, block_label + "\n\n" + continue_text)
 
             if block_type in ("active", "passive"):
-                if RUN_PROFILE == "pilot":
+                if RUN_PROFILE in ("tutorial", "pilot"):
                     trial_types = block_trials[block_type][:]
                 else:
                     trial_types = build_trials_full()
@@ -343,6 +346,12 @@ def main():
                         button_down, _, _ = wait_for_mouse_press(
                             mouse, clock, TOO_FAST_THRESHOLD, triggers
                         )
+                        button_delay = button_down - cue_start
+                        if button_delay < TOO_FAST_THRESHOLD:
+                            triggers.send(TRIG_TOO_FAST)
+                            show_text(win, too_fast_text + "\n\n" + continue_text)
+                            valid_trial = False
+                            continue
                         trig = control_trigger_code("active", 3)
                         triggers.send(trig)
                         trigger_press = trig
