@@ -267,7 +267,37 @@ def main():
     try:
         for block_index, block_type in enumerate(BLOCK_ORDER, start=1):
             block_label = f"Block {block_index}/{total_blocks} ({block_type.capitalize()})"
-            show_text(win, block_label + "\n\n" + continue_text)
+            if lang == "Deutsch":
+                if block_type == "active":
+                    block_task = (
+                        "Aktiv: Druecke den Knopf, nachdem das grosse \"+\" erscheint.\n\n"
+                        "Dann hoerst du einen Ton.\n\n"
+                        "Bei hohen/niedrigen Toenen: nichts tun.\n\n"
+                        "Bei Rauschen: Leertaste druecken."
+                    )
+                else:
+                    block_task = (
+                        "Passiv: Bitte nicht klicken. Warte, bis das grosse \"+\" erscheint.\n\n"
+                        "Dann hoerst du einen Ton.\n\n"
+                        "Bei hohen/niedrigen Toenen: nichts tun.\n\n"
+                        "Bei Rauschen: Leertaste druecken."
+                    )
+            else:
+                if block_type == "active":
+                    block_task = (
+                        "Active: Press the button after the large \"+\" appears.\n\n"
+                        "Then you will hear a sound.\n\n"
+                        "For high/low tones: do nothing.\n\n"
+                        "For noise: press the space bar."
+                    )
+                else:
+                    block_task = (
+                        "Passive: Do not click. Wait for the large \"+\".\n\n"
+                        "Then you will hear a sound.\n\n"
+                        "For high/low tones: do nothing.\n\n"
+                        "For noise: press the space bar."
+                    )
+            show_text(win, block_label + "\n\n" + block_task + "\n\n" + continue_text)
 
             trial_types = build_trials_full()
             cue_delays = balanced_list(CUE_DELAYS, TRIALS_PER_BLOCK)
